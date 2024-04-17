@@ -1,1 +1,3 @@
 # DotsDetection
+
+Using Qt6
