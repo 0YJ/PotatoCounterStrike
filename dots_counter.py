@@ -1,72 +1,120 @@
-# -*- coding: utf-8 -*-
-# Automatic Potato Dots Counter
-#   Author: Yujie Zhang Date: 2023-10-10
-#       DaAnHort JKI
-
 import cv2
 import os
-import sys, io
 import numpy as np
+import tkinter as tk
+from tkinter import filedialog, messagebox, ttk
 from matplotlib import pyplot as plt
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf8')
+class PotatoDotsCounterGUI:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Automatic Potato Dots Counter")
 
-folder_path = 'potato'  
-output_folder = 'results'  
+        self.folder_path = ''
+        self.output_folder = ''
+        self.threshold_step = 1
+        self.blob_color = 0
+        self.inertia_ratio = 0.2
 
-if not os.path.exists(output_folder):
-    os.makedirs(output_folder)
+        self.create_widgets()
 
-image_files = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
+    def create_widgets(self):
+        # Buttons
+        self.open_folder_button = tk.Button(self.root, text="Open Input Folder", command=self.open_folder)
+        self.open_folder_button.pack()
 
-for image_file in image_files:
+        self.choose_output_folder_button = tk.Button(self.root, text="Choose Output Folder", command=self.choose_output_folder)
+        self.choose_output_folder_button.pack()
 
-    image = cv2.imread(image_file)
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    gauss = cv2.GaussianBlur(gray, (9,9), 0) #高斯模糊，X,Y 方向的Ksiez分别为9和9
+        self.run_button = tk.Button(self.root, text="Run", command=self.run_detection)
+        self.run_button.pack()
 
-    params = cv2.SimpleBlobDetector_Params()
-    #斑点检测的可选参数
-    params.minThreshold= 10 #亮度最小阈值控制
-    params.maxThreshold = 255 #亮度最大阈值控制
-    params.thresholdStep = 1 #亮度阈值的步长控制，越小检测出来的斑点越多
+        self.exit_button = tk.Button(self.root, text="Exit", command=self.root.quit)
+        self.exit_button.pack()
 
-    params.filterByColor = True #颜色控制
-    params.blobColor = 0 #只检测黑色斑点
-    #params.blobColor = 255 #只检测白色色斑点
+        # ThresholdStep slider
+        self.threshold_step_label = tk.Label(self.root, text="Threshold Step:")
+        self.threshold_step_label.pack()
+        self.threshold_step_slider = ttk.Scale(self.root, from_=1, to=10, orient=tk.HORIZONTAL, command=self.update_threshold_step)
+        self.threshold_step_slider.pack()
 
-    params.filterByArea = True #像素面积大小控制
-    params.minArea = 20
-    params.maxArea=2000
+        # BlobColor entry
+        self.blob_color_label = tk.Label(self.root, text="Blob Color (0-255):")
+        self.blob_color_label.pack()
+        self.blob_color_entry = tk.Entry(self.root)
+        self.blob_color_entry.pack()
 
-    params.filterByCircularity = True #圆度控制，圆度的定义是（4π×面积）/（周长的平方）
-    params.minCircularity = 0.3
+        # InertiaRatio slider
+        self.inertia_ratio_label = tk.Label(self.root, text="Inertia Ratio:")
+        self.inertia_ratio_label.pack()
+        self.inertia_ratio_slider = ttk.Scale(self.root, from_=0, to=1, orient=tk.HORIZONTAL, command=self.update_inertia_ratio)
+        self.inertia_ratio_slider.pack()
 
-    params.filterByConvexity =True #凸度控制，凸性的定义是（斑点的面积/斑点凸包的面积
-    params.minConvexity = 1.0
+    def open_folder(self):
+        self.folder_path = filedialog.askdirectory()
+        messagebox.showinfo("Folder Selected", f"Selected folder: {self.folder_path}")
 
-    params.filterByInertia = True# 惯性率控制
-    params.minInertiaRatio = 0.2#圆形的惯性率等于1，惯性率越接近1，圆度越高
-    detector = cv2.SimpleBlobDetector_create(params)#创建斑点检测器
-    keypoints = detector.detect(gauss) #在哪个图上检测斑点
-    print("detected %d dots" % len(keypoints))
+    def choose_output_folder(self):
+        self.output_folder = filedialog.askdirectory()
+        messagebox.showinfo("Output Folder Selected", f"Selected output folder: {self.output_folder}")
 
-    #在原图上画出检测到的斑点
-    im_with_keypoints=cv2.drawKeypoints(image, keypoints, np.array([]), (0, 0, 255),
-                                    cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-    #print("斑点中心坐标为：")
-    #for (x, y) in keypoints[0].convert(keypoints):
-    #    print(x, ",", y)
-    #    cv2.circle(im_with_keypoints, (x, y), 1, (255, 255, 255), 1) #以白色标记处斑点中心（以斑点中心为中心画圆）
+    def update_threshold_step(self, val):
+        self.threshold_step = float(val)
 
-    #绘出检测结果图
-    filename = os.path.splitext(os.path.basename(image_file))[0]
-    fig = plt.figure()
-    plt.subplot(1,1,1)
-    plt.imshow(cv2.cvtColor(im_with_keypoints, cv2.COLOR_BGR2RGB)[::-1], origin='lower')
-    plt.title("%d Dots Counted \n for This Potato" % len(keypoints), color="b")
-    #plt.gca().invert_yaxis()
-    #plt.ylim(max(y_list)+30,min(y_list)-40)
-    #plt.show()
-    fig.savefig(f"./results/{filename}_result.jpg", dpi=fig.dpi)
-    plt.close()
+    def update_inertia_ratio(self, val):
+        self.inertia_ratio = float(val)
+
+    def run_detection(self):
+        if not self.folder_path or not self.output_folder:
+            messagebox.showerror("Error", "Please select input and output folders.")
+            return
+
+        image_files = [os.path.join(self.folder_path, f) for f in os.listdir(self.folder_path) if os.path.isfile(os.path.join(self.folder_path, f))]
+
+        for image_file in image_files:
+            image = cv2.imread(image_file)
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            gauss = cv2.GaussianBlur(gray, (9,9), 0)
+
+            params = cv2.SimpleBlobDetector_Params()
+            params.minThreshold= 10
+            params.maxThreshold = 255
+            params.thresholdStep = self.threshold_step
+
+            params.filterByColor = True
+            params.blobColor = int(self.blob_color_entry.get()) if self.blob_color_entry.get() else 0
+
+            params.filterByArea = True
+            params.minArea = 20
+            params.maxArea=2000
+
+            params.filterByCircularity = True
+            params.minCircularity = 0.3
+
+            params.filterByConvexity = True
+            params.minConvexity = 1.0
+
+            params.filterByInertia = True
+            params.minInertiaRatio = self.inertia_ratio
+
+            detector = cv2.SimpleBlobDetector_create(params)
+            keypoints = detector.detect(gauss)
+            print("Detected %d dots in %s" % (len(keypoints), image_file))
+
+            im_with_keypoints = cv2.drawKeypoints(image, keypoints, np.array([]), (0, 0, 255),
+                                                   cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+
+            filename = os.path.splitext(os.path.basename(image_file))[0]
+            output_file = os.path.join(self.output_folder, f"{filename}_result.jpg")
+            cv2.imwrite(output_file, im_with_keypoints)
+            print("Result saved to", output_file)
+
+        messagebox.showinfo("Detection Completed", "All images processed and saved.")
+
+    def run(self):
+        self.root.mainloop()
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = PotatoDotsCounterGUI(root)
+    app.run()
