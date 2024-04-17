@@ -54,7 +54,7 @@ class PotatoDotsCounterGUI:
         self.inertia_ratio_slider = ttk.Scale(self.root, from_=0, to=1, orient=tk.HORIZONTAL, command=self.update_inertia_ratio)
         self.inertia_ratio_slider.pack()
     def add_logo(self):
-        logo_path = "/home/luna/pota/saved.png"
+        logo_path = "logo.png"
         if os.path.exists(logo_path):
             self.logo_img = tk.PhotoImage(file=logo_path)
             self.logo_label = tk.Label(self.root, image=self.logo_img, bg="pink")
