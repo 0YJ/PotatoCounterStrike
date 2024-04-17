@@ -3,7 +3,6 @@ import os
 import numpy as np
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
-from matplotlib import pyplot as plt
 import webbrowser
 
 class PotatoDotsCounterGUI:
@@ -24,16 +23,16 @@ class PotatoDotsCounterGUI:
 
     def create_widgets(self):
         # Buttons
-        self.open_folder_button = tk.Button(self.root, text="Show me your Potatos", command=self.open_folder)
+        self.open_folder_button = ttk.Button(self.root, text="Show me your Potatos", command=self.open_folder, style='C.TButton')
         self.open_folder_button.pack()
 
-        self.choose_output_folder_button = tk.Button(self.root, text="Where u wanna save?", command=self.choose_output_folder)
+        self.choose_output_folder_button = ttk.Button(self.root, text="Where u wanna save?", command=self.choose_output_folder, style='C.TButton')
         self.choose_output_folder_button.pack()
 
-        self.run_button = tk.Button(self.root, text="Do magic!", command=self.run_detection)
+        self.run_button = ttk.Button(self.root, text="Do magic!", command=self.run_detection, style='C.TButton')
         self.run_button.pack()
 
-        self.exit_button = tk.Button(self.root, text="See you next time!", command=self.root.quit)
+        self.exit_button = ttk.Button(self.root, text="See you next time!", command=self.root.quit, style='C.TButton')
         self.exit_button.pack()
 
         # ThresholdStep slider
@@ -53,12 +52,18 @@ class PotatoDotsCounterGUI:
         self.inertia_ratio_label.pack()
         self.inertia_ratio_slider = ttk.Scale(self.root, from_=0, to=1, orient=tk.HORIZONTAL, command=self.update_inertia_ratio)
         self.inertia_ratio_slider.pack()
+
+        # Output text box
+        self.output_text = tk.Text(self.root, height=10, width=50)
+        self.output_text.pack()
+
     def add_logo(self):
         logo_path = "logo.png"
         if os.path.exists(logo_path):
             self.logo_img = tk.PhotoImage(file=logo_path)
             self.logo_label = tk.Label(self.root, image=self.logo_img, bg="pink")
             self.logo_label.pack()
+
     def add_author_link(self):
         author_label = tk.Label(self.root, text="AUTHOR: Yujie Zhang", fg="purple", cursor="hand2")
         author_label.pack()
@@ -66,11 +71,11 @@ class PotatoDotsCounterGUI:
 
     def open_folder(self):
         self.folder_path = filedialog.askdirectory()
-        messagebox.showinfo("Folder Selected", f"Selected folder: {self.folder_path}")
+        self.log_message(f"Selected folder: {self.folder_path}")
 
     def choose_output_folder(self):
         self.output_folder = filedialog.askdirectory()
-        messagebox.showinfo("Output Folder Selected", f"Selected output folder: {self.output_folder}")
+        self.log_message(f"Selected output folder: {self.output_folder}")
 
     def update_threshold_step(self, val):
         self.threshold_step = float(val)
@@ -113,7 +118,11 @@ class PotatoDotsCounterGUI:
 
             detector = cv2.SimpleBlobDetector_create(params)
             keypoints = detector.detect(gauss)
-            print("Detected %d dots in %s" % (len(keypoints), image_file))
+            self.log_message(f"Detected {len(keypoints)} dots in {image_file}")
+
+            # Add text with number of keypoints
+            text = "Number of Dots: {}".format(len(keypoints))
+            cv2.putText(image, text, (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
             im_with_keypoints = cv2.drawKeypoints(image, keypoints, np.array([]), (0, 0, 255),
                                                    cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
@@ -121,9 +130,12 @@ class PotatoDotsCounterGUI:
             filename = os.path.splitext(os.path.basename(image_file))[0]
             output_file = os.path.join(self.output_folder, f"{filename}_result.jpg")
             cv2.imwrite(output_file, im_with_keypoints)
-            print("Result saved to", output_file)
+            self.log_message(f"Result saved to {output_file}")
 
         messagebox.showinfo("Detection Completed", "All images processed and saved.")
+
+    def log_message(self, message):
+        self.output_text.insert(tk.END, message + "\n")
 
     def run(self):
         self.root.mainloop()
