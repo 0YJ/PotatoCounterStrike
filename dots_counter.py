@@ -93,7 +93,7 @@ class PotatoDotsCounterGUI:
         for image_file in image_files:
             image = cv2.imread(image_file)
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            gauss = cv2.GaussianBlur(gray, (9,9), 0)
+            gauss = cv2.GaussianBlur(gray, (5,5), 0)
 
             params = cv2.SimpleBlobDetector_Params()
             params.minThreshold= 10
