@@ -104,7 +104,7 @@ class PotatoDotsCounterGUI:
             params.blobColor = int(self.blob_color_entry.get()) if self.blob_color_entry.get() else 0
 
             params.filterByArea = True
-            params.minArea = 20
+            params.minArea = 15
             params.maxArea=2000
 
             params.filterByCircularity = True
