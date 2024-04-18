@@ -65,7 +65,7 @@ class PotatoDotsCounterGUI:
             self.logo_label.pack()
 
     def add_author_link(self):
-        author_label = tk.Label(self.root, text="AUTHOR: Yujie Zhang", fg="purple", cursor="hand2")
+        author_label = tk.Label(self.root, text="AUTHOR: 0YJ", fg="purple", cursor="hand2")
         author_label.pack()
         author_label.bind("<Button-1>", lambda e: webbrowser.open_new("https://github.com/0yj"))
 
