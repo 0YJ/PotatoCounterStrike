@@ -8,7 +8,7 @@ import webbrowser
 class PotatoDotsCounterGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("Automatic Potato Dots Counter")
+        self.root.title("Potato Counter Strike")
         self.root.configure(bg="pink")
 
         self.folder_path = ''
@@ -23,16 +23,16 @@ class PotatoDotsCounterGUI:
 
     def create_widgets(self):
         # Buttons
-        self.open_folder_button = ttk.Button(self.root, text="Show me your Potatos", command=self.open_folder, style='C.TButton')
+        self.open_folder_button = ttk.Button(self.root, text="Choose Input Folder", command=self.open_folder, style='C.TButton')
         self.open_folder_button.pack()
 
-        self.choose_output_folder_button = ttk.Button(self.root, text="Where u wanna save?", command=self.choose_output_folder, style='C.TButton')
+        self.choose_output_folder_button = ttk.Button(self.root, text="Choose Output Folder", command=self.choose_output_folder, style='C.TButton')
         self.choose_output_folder_button.pack()
 
-        self.run_button = ttk.Button(self.root, text="Do magic!", command=self.run_detection, style='C.TButton')
+        self.run_button = ttk.Button(self.root, text="Start", command=self.run_detection, style='C.TButton')
         self.run_button.pack()
 
-        self.exit_button = ttk.Button(self.root, text="See you next time!", command=self.root.quit, style='C.TButton')
+        self.exit_button = ttk.Button(self.root, text="Quit", command=self.root.quit, style='C.TButton')
         self.exit_button.pack()
 
         # ThresholdStep slider
@@ -42,7 +42,7 @@ class PotatoDotsCounterGUI:
         self.threshold_step_slider.pack()
 
         # BlobColor entry
-        self.blob_color_label = tk.Label(self.root, text="which color of your potato? (0=black, 255=white):")
+        self.blob_color_label = tk.Label(self.root, text="Dots Type? (0=black, 255=white):")
         self.blob_color_label.pack()
         self.blob_color_entry = tk.Entry(self.root)
         self.blob_color_entry.pack()
@@ -58,7 +58,7 @@ class PotatoDotsCounterGUI:
         self.output_text.pack()
 
     def add_logo(self):
-        logo_path = "logo.png"
+        logo_path = "_internal/logo.png"
         if os.path.exists(logo_path):
             self.logo_img = tk.PhotoImage(file=logo_path)
             self.logo_label = tk.Label(self.root, image=self.logo_img, bg="pink")
@@ -97,21 +97,21 @@ class PotatoDotsCounterGUI:
 
             params = cv2.SimpleBlobDetector_Params()
             params.minThreshold= 10
-            params.maxThreshold = 255
+            params.maxThreshold = 250
             params.thresholdStep = self.threshold_step
 
             params.filterByColor = True
             params.blobColor = int(self.blob_color_entry.get()) if self.blob_color_entry.get() else 0
 
             params.filterByArea = True
-            params.minArea = 15
-            params.maxArea=2000
+            params.minArea = 12
+            params.maxArea = 666
 
             params.filterByCircularity = True
-            params.minCircularity = 0.3
+            params.minCircularity = 0.1
 
             params.filterByConvexity = True
-            params.minConvexity = 1.0
+            params.minConvexity = 0.1
 
             params.filterByInertia = True
             params.minInertiaRatio = self.inertia_ratio
