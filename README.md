@@ -10,7 +10,7 @@ UI:
   <img src="img/image.png" alt="avatar">
 </p>
 
-Process: 
+Brain Storm: 
 <p align="center">
   <img src="potato/saved.png" alt="avatar">
 </p>
