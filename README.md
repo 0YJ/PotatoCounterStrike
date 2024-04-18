@@ -1,6 +1,6 @@
 # Potato Counter Strike
 
-This is a simple tool using opencv, tk for potato dots counting. 
+This software is using opencv, tk for potato dots counting. 
 THe accuracy is not 100% but with classic algorithm it should be enough for covering daily usage. 
 
 It is still under development for C++ version with Qt6. 
