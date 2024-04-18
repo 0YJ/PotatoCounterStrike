@@ -15,5 +15,9 @@ Brain Storm:
   <img src="potato/saved.png" alt="avatar">
 </p>
 
+For binary version, auto-py-to-exe is used, you can install it by: 
+```
+pip install auto-py-to-exe
+```
 
 If you have any problems play write me a ticket from Issue function.  
