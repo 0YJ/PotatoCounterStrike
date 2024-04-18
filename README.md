@@ -12,7 +12,7 @@ It is still under development for C++ version with Qt6.
 
 UI: 
 <p align="center">
-  <img src="img/image.png" alt="avatar">
+  <img src="image.png" alt="avatar">
 </p>
 
 Brain Storm: 
