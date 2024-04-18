@@ -20,4 +20,4 @@ Brain Storm:
   <img src="potato/saved.png" alt="bs">
 </p>
 
-If you have any problems please don't be shy and write me a ticket from Issue function.  
+If you have any problems please do not hesitate to contact me or write a ticket from Issue function.  
