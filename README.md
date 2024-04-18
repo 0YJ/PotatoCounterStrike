@@ -12,12 +12,12 @@ It is still under development for C++ version with Qt6.
 
 UI: 
 <p align="center">
-  <img src="potato/image.png" alt="avatar">
+  <img src="potato/image.png" alt="ui">
 </p>
 
 Brain Storm: 
 <p align="center">
-  <img src="potato/saved.png" alt="avatar">
+  <img src="potato/saved.png" alt="bs">
 </p>
 
 If you have any problems please don't be shy and write me a ticket from Issue function.  
