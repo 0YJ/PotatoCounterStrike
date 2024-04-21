@@ -1,3 +1,5 @@
+# Konsti here just doing some shenanigans to see if hes able to pull and push stuff with his desktop github thingy
+
 # Potato Counter Strike
 
 This software is using opencv, tk for potato dots counting. 
